@@ -18,30 +18,31 @@ public class WebController {
 	@Autowired
     private PeopleRepository repository;
 
-    @RequestMapping("/people/{name}")
+    @RequestMapping("/people/{lastName}")
     public List<People> getRecognition(@PathVariable("lastName") String lastName){
-        return repository.findByLastName(lastName);
+    		List<People> lp = repository.findByLastName(lastName);
+    		return lp;
     }
 
     @RequestMapping("/people")
-    public List<People> getColleagues(){
+    public List<People> getPeople(){
         return repository.findAll();
     }
 
     @PostMapping("/people")
     
-    public ResponseEntity<String> addColleague(@RequestBody People people){
+    public ResponseEntity<String> addPeople(@RequestBody People people){
         repository.save(people);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     //This is of course a very naive implementation! We are assuming unique names...
-    @DeleteMapping("/people/{lname}")
-    public ResponseEntity<String> deleteColleague(@PathVariable  String name){
-        List<People> colleagues = repository.findByLastName(name);
-        if(colleagues.size() == 1) {
-            People colleague = colleagues.get(0);
-            repository.delete(colleague);
+    @DeleteMapping("/people/{lastName}")
+    public ResponseEntity<String> deletePeople(@PathVariable("lastName")  String lastName){
+        List<People> people = repository.findByLastName(lastName);
+        if(people.size() == 1) {
+            People p = people.get(0);
+            repository.delete(p);
             return new ResponseEntity<>(HttpStatus.ACCEPTED);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
